@@ -14,3 +14,14 @@ export const generateMockPet=()=>{
 }
 
 // console.log(generateMockPet()) */
+
+export const generateMockPet = () => {
+    const mascotas = {
+        name: fa.animal.petName(),
+        specie: fa.animal.type(),
+        birthDate: fa.date.past({ years: 10 }),
+    }
+    return mascotas
+}
+
+  
