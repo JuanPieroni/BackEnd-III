@@ -1,10 +1,11 @@
 import { Router } from "express"
-import { generateMockPet } from "../mocks/mocks.js"
-import petModel from "../models/petModel.js"
-export const router = Router()
+import { generateMockPet } from "../mocks/pet.mock.js"
+import petModel from "../dao/models/Pet.js"
+
+const router = Router()
 
 router.get("/mockingpets", async (req, res) => {
-    let { cantidad = 1, grabar = 0 } = req.query
+    let { cantidad = 100, grabar = 0 } = req.query
 
     let mascotas = []
 
@@ -17,5 +18,10 @@ router.get("/mockingpets", async (req, res) => {
     }
 
     res.setHeader("Content-Type", "application/json")
-    res.status(200).json({ mascotas })
+    res.status(200).json({ status: "success", payload: mascotas })
 })
+
+router.get("mockingUsers", async (req, res) => {})
+router.post("/generateData", async (req, res) => {})
+
+export default router
