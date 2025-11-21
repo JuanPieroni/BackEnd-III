@@ -17,6 +17,7 @@ router.get("/mockingpets", async (req, res) => {
 
     if (grabar) {
         mascotas = await petModel.insertMany(mascotas)
+        console.log(`${mascotas.length} mascotas guardatas en DB`)
     }
 
     res.setHeader("Content-Type", "application/json")
@@ -25,16 +26,17 @@ router.get("/mockingpets", async (req, res) => {
 
 router.get("/mockingUsers", async (req, res) => {
     let { cantidad = 50, grabar = 0 } = req.query
+    console.log(`Generando usuarios... cantidad : ${cantidad} `)
 
     let usuarios = []
-    
+
     for (let i = 0; i < cantidad; i++) {
         usuarios.push(await generateMockUser())
-        
     }
 
     if (grabar) {
         usuarios = await userModel.insertMany(usuarios)
+        console.log(`${usuarios.length} usuarios agregados a DB`)
     }
 
     res.setHeader("Content-Type", "application/json")
@@ -43,10 +45,11 @@ router.get("/mockingUsers", async (req, res) => {
 
 router.post("/generateData", async (req, res) => {
     const { users = 0, pets = 0 } = req.body
+    console.log(`Generando ${users} usuarios y ${pets} mascotas.....`)
 
     let usuariosArray = []
     let mascotasArray = []
-    
+
     for (let i = 0; i < users; i++) {
         usuariosArray.push(await generateMockUser())
     }
@@ -54,16 +57,27 @@ router.post("/generateData", async (req, res) => {
     for (let i = 0; i < pets; i++) {
         mascotasArray.push(generateMockPet())
     }
-    
+
     const usuariosDB = await userModel.insertMany(usuariosArray)
     const mascotasDB = await petModel.insertMany(mascotasArray)
     
-    
+    const totalUsers = await userModel.countDocuments()
+    const totalPets = await petModel.countDocuments()
+
+    console.log(
+        `Insertados: ${usuariosDB.length} usuarios, ${mascotasDB.length} mascotas`
+    )
+    console.log(` Total en DB: ${totalUsers} usuarios, ${totalPets} mascotas`)
+
     res.setHeader("Content-Type", "application/json")
     res.status(200).json({
         status: "success",
-        lenght: { usersCreated: usuariosDB.length, petsCreated: mascotasDB.length },
-        payload: { usersEnDB: usuariosDB, petsEnDB: mascotasDB  },
+        agregados: {
+            usersCreated: usuariosDB.length,
+            petsCreated: mascotasDB.length,
+        },
+        totalEnDB: { totalUsers, totalPets },
+        payload: { usersEnDB: usuariosDB, petsEnDB: mascotasDB },
     })
 })
 
