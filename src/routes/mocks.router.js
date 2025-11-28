@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { generateMockPet } from "../mocks/pet.mock.js"
 import { generateMockUser } from "../mocks/user.mock.js"
+ 
 import petModel from "../dao/models/Pet.js"
 import userModel from "../dao/models/User.js"
 
@@ -10,14 +11,14 @@ router.get("/mockingpets", async (req, res) => {
     let { cantidad = 100, grabar = 0 } = req.query
 
     let mascotas = []
-
     for (let i = 0; i < cantidad; i++) {
         mascotas.push(generateMockPet())
     }
 
     if (grabar) {
         mascotas = await petModel.insertMany(mascotas)
-        console.log(`${mascotas.length} mascotas guardatas en DB`)
+        /* console.log(`${mascotas.length} mascotas guardatas en DB`) */
+   
     }
 
     res.setHeader("Content-Type", "application/json")
@@ -60,7 +61,7 @@ router.post("/generateData", async (req, res) => {
 
     const usuariosDB = await userModel.insertMany(usuariosArray)
     const mascotasDB = await petModel.insertMany(mascotasArray)
-    
+
     const totalUsers = await userModel.countDocuments()
     const totalPets = await petModel.countDocuments()
 
