@@ -34,6 +34,29 @@ app.get("/", (req, res) => {
     res.send("Probando winston.")
 })
 
+
+
+/* ARTILLERY  EJEMPLO
+
+app.get("/sencilla", (req, res) => {
+    let suma = 0
+    for (let i = 0; i < 1000000; i++) {
+
+        suma+=i 
+    }
+    res.send({suma})
+})
+
+app.get("/compleja", (req, res)=> {
+    let suma = 0 
+    for (let i = 0; i < 5e8; i++) {
+        suma+= i
+    }
+    res.send({suma })
+})
+*/
+
+
 app.use("/api/users", usersRouter)
 app.use("/api/pets", petsRouter)
 app.use("/api/adoptions", adoptionsRouter)

@@ -1,0 +1,30 @@
+{
+  message: 'Probando winston.',
+  level: 'warning',
+  timestamp: '11-28 18:33:11'
+}
+{
+  message: 'Probando winston.',
+  level: 'fatal',
+  timestamp: '11-28 18:33:11'
+}
+{
+  message: 'Probando winston.',
+  level: 'warning',
+  timestamp: '11-28 18:33:12'
+}
+{
+  message: 'Probando winston.',
+  level: 'fatal',
+  timestamp: '11-28 18:33:12'
+}
+{
+  message: 'Probando winston.',
+  level: 'warning',
+  timestamp: '11-28 18:33:13'
+}
+{
+  message: 'Probando winston.',
+  level: 'fatal',
+  timestamp: '11-28 18:33:13'
+}
