@@ -1,0 +1,6 @@
+services:
+  recursosbackendadoptmemain:
+    image: recursosbackendadoptmemain
+    build:
+      context: .
+      dockerfile: ./Dockerfile
