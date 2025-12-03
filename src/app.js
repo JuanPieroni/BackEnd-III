@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
+import config from "./utils/config.js"
 
 import usersRouter from "./routes/users.router.js"
 import petsRouter from "./routes/pets.router.js"
@@ -13,10 +14,11 @@ import cluster from "cluster"
 import { cpus } from "os"
 
 const app = express()
-const PORT = process.env.PORT || 8080
-const connection = mongoose.connect(
-    `mongodb+srv://SeisDuro:Atlgla36%2A@cluster0.bvo0gcz.mongodb.net/AdoptMe?retryWrites=true&w=majority`
-)
+const PORT = config.port
+
+mongoose.connect(config.mongoUri)
+    .then(() => logger.information("MongoDB conectado exitosamente"))
+    .catch((error) => logger.error(`Error conectando a MongoDB: ${error.message}`))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -68,6 +70,7 @@ app.use("/api/mocks", mocksRouter)
 // TODO : USAR PM2 PARA CLUSTERIZAR EN PRODUCCION
 // TODO: CLUSTER PARA DESARROLLO
 
+/*  
 if (cluster.isPrimary) {
     console.log(cluster.isPrimary, process.pid)
     for (let i = 0; i < cpus().length; i++) {
@@ -91,3 +94,17 @@ if (cluster.isPrimary) {
         logger.information(`Listening on ${PORT} - PID WORKER ${process.pid}`)
     )
 }
+*/
+
+ 
+app.get("/compleja", (req, res) => {
+    let suma = 0
+    for (let i = 0; i < 5e8; i++) {
+        suma += i
+    }
+    res.send({ suma })
+})
+
+app.listen(PORT, () =>
+    logger.information(`Listening on ${PORT} - PID ${process.pid}`)
+)

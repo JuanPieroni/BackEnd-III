@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adoptme-service
+spec:
+  selector:
+    app: adoptme-pods
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adoptme-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: adoptme-pods
+  template:
+    metadata:
+      labels:
+        app: adoptme-pods
+    spec:
+      containers:
+        - name: adoptme-container
+          image: juanpieroni/adoptme-app:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: MONGO_URI
+              value: mongodb+srv://SeisDuro:Atlgla36%2A@cluster0.bvo0gcz.mongodb.net/AdoptMe?retryWrites=true&w=majority
+            - name: NODE_ENV
+              value: production
+          imagePullPolicy: Always
