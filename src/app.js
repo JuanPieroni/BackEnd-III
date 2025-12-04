@@ -103,8 +103,12 @@ app.get("/compleja", (req, res) => {
         suma += i
     }
     res.send({ suma })
+    
 })
+
 
 app.listen(PORT, () =>
     logger.information(`Listening on ${PORT} - PID ${process.pid}`)
+
 )
+
