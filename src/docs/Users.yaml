@@ -1,0 +1,35 @@
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        "200":
+          description: All users
+        "400":
+          description: Some data missing
+        "500":
+          description: Server Error
+ 
+components:
+    schemas:
+        User:
+            type: object
+            properties:
+                id:
+                    type: string
+                first_name:
+                    type: string
+                last_name:
+                    type: string
+                age:
+                    type: number
+                email:
+                    type: string
+            example:
+                id: "12345"
+                first_name: "John"
+                last_name: "Doe"
+                age: 30
+                email: "john.doe@example.com"

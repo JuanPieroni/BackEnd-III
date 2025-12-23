@@ -1,5 +1,5 @@
 import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
+ 
 import __dirname from "./index.js";
 
 const swaggerOptions = {
@@ -11,5 +11,7 @@ const swaggerOptions = {
             description: "Proyecto CoderHouse",
         },
     },
-    apis: [`${__dirname}/docs/**/*.yaml`],
+    apis: [`${__dirname}/../docs/**/*.yaml`],
 };
+
+export const swaggerSetup = swaggerJSDoc(swaggerOptions);
