@@ -25,8 +25,8 @@ mongoose.connect(config.mongoUri)
 app.use(express.json())
 app.use(cookieParser())
 
-/* 
- LOGGER EJEMPLO
+
+/*  LOGGER EJEMPLO 
 
 app.get("/", (req, res) => {
     console.log("probando logs")

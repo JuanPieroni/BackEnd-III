@@ -1,35 +1,35 @@
 {
-  "name": "plantilladocumentacion",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "nodemon src/app.js",
-    "dev": "node src/app.js",
-    "test": "mocha test/supertest.test.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@faker-js/faker": "^10.1.0",
-    "bcrypt": "^5.1.0",
-    "cookie-parser": "^1.4.6",
-    "dotenv": "^17.2.3",
-    "express": "^4.18.2",
-    "js-yaml": "^4.1.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.7.5",
-    "multer": "^1.4.5-lts.1",
-    "nodemon": "^3.1.11",
-    "supertest": "^6.3.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "winston": "^3.18.3"
-  },
-  "devDependencies": {
-    "chai": "^4.3.7",
-    "mocha": "^10.8.2"
-  }
+    "name": "plantilladocumentacion",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "nodemon src/app.js",
+        "dev": "node src/app.js",
+        "test": "mocha -t 10000 src/test/**/*.test.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@faker-js/faker": "^10.1.0",
+        "bcrypt": "^5.1.0",
+        "cookie-parser": "^1.4.6",
+        "dotenv": "^17.2.3",
+        "express": "^4.18.2",
+        "js-yaml": "^4.1.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.7.5",
+        "multer": "^1.4.5-lts.1",
+        "nodemon": "^3.1.11",
+        "supertest": "^6.3.3",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
+        "winston": "^3.18.3"
+    },
+    "devDependencies": {
+        "chai": "^4.3.7",
+        "mocha": "^10.1.0"
+    }
 }
