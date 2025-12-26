@@ -6,30 +6,160 @@ paths:
         - Users
       responses:
         "200":
-          description: All users
-        "400":
-          description: Some data missing
+          description: All users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
         "500":
           description: Server Error
- 
+
+  /api/users/{uid}:
+    get:
+      summary: Get user by ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
+        "500":
+          description: Server Error
+
+    put:
+      summary: Update user by ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+              example:
+                first_name: "Jane"
+                last_name: "Smith"
+                email: "jane.smith@example.com"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User updated
+        "404":
+          description: User not found
+        "500":
+          description: Server Error
+
+    delete:
+      summary: Delete user by ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User deleted
+        "500":
+          description: Server Error
+
 components:
-    schemas:
-        User:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        pets:
+          type: array
+          items:
             type: object
             properties:
-                id:
-                    type: string
-                first_name:
-                    type: string
-                last_name:
-                    type: string
-                age:
-                    type: number
-                email:
-                    type: string
-            example:
-                id: "12345"
-                first_name: "John"
-                last_name: "Doe"
-                age: 30
-                email: "john.doe@example.com"
+              _id:
+                type: string
+      example:
+        _id: "507f1f77bcf86cd799439011"
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        password: "$2b$10$..."
+        role: "user"
+        pets: []
