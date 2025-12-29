@@ -92,8 +92,40 @@ describe("adoptions endopoints", () => {
         })
     })
 
-    describe("Get /api/adoptions/:aid get una adoption por id ", () => {})
-    //todo 
-    //todo poner un before aca 
-    //todo testear que sean id validos , en owner y pet
+    describe("Get /api/adoptions/:aid get una adoption por id ", () => {
+        before(async () => {
+            const adoptions = await request.get("/api/adoptions")
+            if (adoptions.body.payload.lenght > 0) {
+                testAdoptionId = adoptions.body.payload[0]._id
+            }
+        })
+
+        it("debe devolver una adopcion id ", async () => {
+            if (!testAdoptionId) {
+                this.skip()
+            }
+            const response = await request.get(
+                `/api/adoptions/${testAdoptionId}`
+            )
+            expect(response.status).to.equal(200)
+            expect(response.body).to.have.property("status", "success")
+            expect(response.body).to.have.property("payload")
+            expect(response.body.payload).to.have.property(
+                "_id",
+                testAdoptionId
+            )
+        })
+        it("debe fallar si la adopcion no existe", async () => {
+            const idAdoptionTrucho = "507f1f77bcf86cd799439011"
+            const response = await request.get(
+                `/api/adoptions/${idAdoptionTrucho}`
+            )
+            expect(response.status).to.equal(404)
+            expect(response.body).to.have.property("status", "error")
+            expect(response.body).to.have.property(
+                "error",
+                "Adoption not found"
+            )
+        })
+    })
 })
