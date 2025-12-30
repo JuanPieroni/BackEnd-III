@@ -1,12 +1,13 @@
 paths:
   /api/users:
     get:
-      summary: Get all users
+      summary: Obtener todos los usuarios
+      description: Retorna una lista de todos los usuarios registrados en el sistema
       tags:
         - Users
       responses:
         "200":
-          description: All users retrieved successfully
+          description: Usuarios obtenidos exitosamente
           content:
             application/json:
               schema:
@@ -20,23 +21,25 @@ paths:
                     items:
                       $ref: '#/components/schemas/User'
         "500":
-          description: Server Error
+          description: Error interno del servidor
 
   /api/users/{uid}:
     get:
-      summary: Get user by ID
+      summary: Obtener usuario por ID
+      description: Busca y retorna un usuario específico por su ID
       tags:
         - Users
       parameters:
         - name: uid
           in: path
           required: true
-          description: User ID
+          description: ID único del usuario
           schema:
             type: string
+            example: "507f1f77bcf86cd799439011"
       responses:
         "200":
-          description: User found
+          description: Usuario encontrado
           content:
             application/json:
               schema:
@@ -48,23 +51,37 @@ paths:
                   payload:
                     $ref: '#/components/schemas/User'
         "404":
-          description: User not found
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "User not found"
         "500":
-          description: Server Error
+          description: Error interno del servidor
 
     put:
-      summary: Update user by ID
+      summary: Actualizar usuario
+      description: Actualiza los datos de un usuario existente
       tags:
         - Users
       parameters:
         - name: uid
           in: path
           required: true
-          description: User ID
+          description: ID único del usuario a actualizar
           schema:
             type: string
+            example: "507f1f77bcf86cd799439011"
       requestBody:
         required: true
+        description: Datos del usuario a actualizar
         content:
           application/json:
             schema:
@@ -72,21 +89,30 @@ paths:
               properties:
                 first_name:
                   type: string
+                  description: Nombre del usuario
+                  example: "Juan"
                 last_name:
                   type: string
+                  description: Apellido del usuario
+                  example: "Pérez"
                 email:
                   type: string
+                  format: email
+                  description: Email único del usuario
+                  example: "juan.perez@example.com"
                 password:
                   type: string
+                  minLength: 6
+                  description: Contraseña (mínimo 6 caracteres)
+                  example: "nuevaPassword123"
                 role:
                   type: string
-              example:
-                first_name: "Jane"
-                last_name: "Smith"
-                email: "jane.smith@example.com"
+                  enum: ["user", "admin"]
+                  description: Rol del usuario
+                  example: "user"
       responses:
         "200":
-          description: User updated successfully
+          description: Usuario actualizado exitosamente
           content:
             application/json:
               schema:
@@ -98,25 +124,40 @@ paths:
                   message:
                     type: string
                     example: User updated
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Email inválido"
         "404":
-          description: User not found
+          description: Usuario no encontrado
         "500":
-          description: Server Error
+          description: Error interno del servidor
 
     delete:
-      summary: Delete user by ID
+      summary: Eliminar usuario
+      description: Elimina un usuario del sistema permanentemente
       tags:
         - Users
       parameters:
         - name: uid
           in: path
           required: true
-          description: User ID
+          description: ID único del usuario a eliminar
           schema:
             type: string
+            example: "507f1f77bcf86cd799439011"
       responses:
         "200":
-          description: User deleted successfully
+          description: Usuario eliminado exitosamente
           content:
             application/json:
               schema:
@@ -128,38 +169,65 @@ paths:
                   message:
                     type: string
                     example: User deleted
+        "404":
+          description: Usuario no encontrado
         "500":
-          description: Server Error
+          description: Error interno del servidor
 
 components:
   schemas:
     User:
       type: object
+      description: Modelo de usuario del sistema
       properties:
         _id:
           type: string
+          description: ID único generado por MongoDB
+          example: "507f1f77bcf86cd799439011"
         first_name:
           type: string
+          description: Nombre del usuario
+          example: "Juan"
         last_name:
           type: string
+          description: Apellido del usuario
+          example: "Pérez"
         email:
           type: string
+          format: email
+          description: Email único del usuario
+          example: "juan.perez@example.com"
         password:
           type: string
+          description: Contraseña hasheada (no se muestra en respuestas)
+          example: "$2b$10$..."
         role:
           type: string
+          enum: ["user", "admin"]
+          description: Rol del usuario en el sistema
+          default: "user"
+          example: "user"
         pets:
           type: array
+          description: Lista de mascotas adoptadas por el usuario
           items:
             type: object
             properties:
               _id:
                 type: string
+                description: ID de la mascota
+                example: "507f1f77bcf86cd799439012"
+          example: []
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
       example:
         _id: "507f1f77bcf86cd799439011"
-        first_name: "John"
-        last_name: "Doe"
-        email: "john.doe@example.com"
+        first_name: "Juan"
+        last_name: "Pérez"
+        email: "juan.perez@example.com"
         password: "$2b$10$..."
         role: "user"
         pets: []

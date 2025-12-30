@@ -7,7 +7,8 @@ export const generateMockUser = async () => {
 
     const primeraLetra = first_name[0].toLowerCase()
     const primerApellido = last_name.split(" ")[0].toLowerCase()
-    const email = `${primeraLetra}${primerApellido}@coder.com.ar`
+    const random = Math.floor(Math.random() * 100) + 1
+    const email = `${primeraLetra}${primerApellido}${random}@coder.com.ar`
 
     return {
         first_name,

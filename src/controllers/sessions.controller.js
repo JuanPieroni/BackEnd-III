@@ -2,6 +2,7 @@ import { usersService } from "../services/index.js"
 import { createHash, passwordValidation } from "../utils/index.js"
 import jwt from "jsonwebtoken"
 import UserDTO from "../dto/User.dto.js"
+import { logger } from "../utils/winston.js"
 
 const register = async (req, res) => {
     try {
@@ -23,7 +24,7 @@ const register = async (req, res) => {
             password: hashedPassword,
         }
         let result = await usersService.create(user)
-        console.log(result)
+        logger.info(result)
         res.send({ status: "success", payload: result._id })
     } catch (error) {}
 }

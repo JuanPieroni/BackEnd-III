@@ -5,34 +5,15 @@ const customLevels = {
     levels: {
         fatal: 0,
         warning: 1,
-        information: 2,
+        info: 2,
     },
     colors: {
         fatal: "red",
         warning: "yellow",
-        information: "green",
+        info: "green",
     },
 }
-/* export const logger = winston.createLogger({
-    levels: customLevels.levels,
-    transports: [
-        new winston.transports.Console({
-            level: "information",
-            format: winston.format.combine(
-                winston.format.colorize({ colors: customLevels.colors }),
-                winston.format.simple()
-            ),
-        }),
-        new winston.transports.File({
-            filename: "./logs/errors.log",
-            level: "information",
-            format: winston.format.combine(
-                winston.format.timestamp({ format: "MM-DD HH:mm:ss" }),
-                winston.format.prettyPrint()
-            ),
-        }),
-    ],
-}) */
+ 
 
 export let logger
 
@@ -48,6 +29,14 @@ if (config.environment === "production") {
                     winston.format.prettyPrint()
                 ),
             }),
+            new winston.transports.Console({
+                level: "info",
+                format: winston.format.combine(
+                    winston.format.timestamp({ format: "MM-DD HH:mm:ss" }),
+                    winston.format.colorize({ colors: customLevels.colors }),
+                    winston.format.simple()
+                ),
+            }),
         ],
     })
 } else {
@@ -55,7 +44,7 @@ if (config.environment === "production") {
         levels: customLevels.levels,
         transports: [
             new winston.transports.Console({
-                level: "information",
+                level: "info",
                 format: winston.format.combine(
                     winston.format.timestamp({ format: "MM-DD HH:mm:ss" }),
                     winston.format.colorize({ colors: customLevels.colors }),

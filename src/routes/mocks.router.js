@@ -1,9 +1,8 @@
 import { Router } from "express"
 import { generateMockPet } from "../mocks/pet.mock.js"
 import { generateMockUser } from "../mocks/user.mock.js"
- 
-import petModel from "../dao/models/Pet.js"
-import userModel from "../dao/models/User.js"
+import { logger } from "../utils/winston.js"
+import { petsService, usersService } from "../services/index.js"
 
 const router = Router()
 
@@ -16,9 +15,10 @@ router.get("/mockingpets", async (req, res) => {
     }
 
     if (grabar) {
-        mascotas = await petModel.insertMany(mascotas)
-        /* console.log(`${mascotas.length} mascotas guardatas en DB`) */
-   
+        mascotas = await Promise.all(
+            mascotas.map((mascota) => petsService.create(mascota))
+        )
+        logger.info(`${mascotas.length} mascotas guardatas en DB`)
     }
 
     res.setHeader("Content-Type", "application/json")
@@ -27,7 +27,7 @@ router.get("/mockingpets", async (req, res) => {
 
 router.get("/mockingUsers", async (req, res) => {
     let { cantidad = 50, grabar = 0 } = req.query
-    console.log(`Generando usuarios... cantidad : ${cantidad} `)
+    logger.info(`Generando usuarios... cantidad : ${cantidad} `)
 
     let usuarios = []
 
@@ -36,8 +36,10 @@ router.get("/mockingUsers", async (req, res) => {
     }
 
     if (grabar) {
-        usuarios = await userModel.insertMany(usuarios)
-        console.log(`${usuarios.length} usuarios agregados a DB`)
+        usuarios = await Promise.all(
+            usuarios.map((usuario) => usersService.create(usuario))
+        )
+        logger.info(`${usuarios.length} usuarios agregados a DB`)
     }
 
     res.setHeader("Content-Type", "application/json")
@@ -46,7 +48,7 @@ router.get("/mockingUsers", async (req, res) => {
 
 router.post("/generateData", async (req, res) => {
     const { users = 0, pets = 0 } = req.body
-    console.log(`Generando ${users} usuarios y ${pets} mascotas.....`)
+    logger.info(`Generando ${users} usuarios y ${pets} mascotas.....`)
 
     let usuariosArray = []
     let mascotasArray = []
@@ -59,16 +61,22 @@ router.post("/generateData", async (req, res) => {
         mascotasArray.push(generateMockPet())
     }
 
-    const usuariosDB = await userModel.insertMany(usuariosArray)
-    const mascotasDB = await petModel.insertMany(mascotasArray)
+    const usuariosDB = await Promise.all(
+        usuariosArray.map((usuario) => usersService.create(usuario))
+    )
+    const mascotasDB = await Promise.all(
+        mascotasArray.map((mascota) => petsService.create(mascota))
+    )
 
-    const totalUsers = await userModel.countDocuments()
-    const totalPets = await petModel.countDocuments()
+    const allUsers = await usersService.getAll()
+    const allPets = await petsService.getAll()
+    const totalUsers = allUsers.length
+    const totalPets = allPets.length
 
-    console.log(
+    logger.info(
         `Insertados: ${usuariosDB.length} usuarios, ${mascotasDB.length} mascotas`
     )
-    console.log(` Total en DB: ${totalUsers} usuarios, ${totalPets} mascotas`)
+    logger.info(` Total en DB: ${totalUsers} usuarios, ${totalPets} mascotas`)
 
     res.setHeader("Content-Type", "application/json")
     res.status(200).json({

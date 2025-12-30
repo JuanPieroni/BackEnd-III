@@ -88,14 +88,17 @@ describe("adoptions endopoints", () => {
             )
             expect(response.status).to.equal(400)
             expect(response.body).to.have.property("status", "error")
-            expect(response.body).to.have.property("error", "mascota adopatada")
+            expect(response.body).to.have.property(
+                "error",
+                "mascota ya adoptada"
+            )
         })
     })
 
     describe("Get /api/adoptions/:aid get una adoption por id ", () => {
         before(async () => {
             const adoptions = await request.get("/api/adoptions")
-            if (adoptions.body.payload.lenght > 0) {
+            if (adoptions.body.payload.length > 0) {
                 testAdoptionId = adoptions.body.payload[0]._id
             }
         })

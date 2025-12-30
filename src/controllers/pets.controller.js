@@ -1,6 +1,7 @@
 import PetDTO from "../dto/Pet.dto.js"
 import { petsService } from "../services/index.js"
 import __dirname from "../utils/index.js"
+import { logger } from "../utils/winston.js"
 
 const getAllPets = async (req, res) => {
     const pets = await petsService.getAll()
@@ -38,14 +39,14 @@ const createPetWithImage = async (req, res) => {
         return res
             .status(400)
             .send({ status: "error", error: "Incomplete values" })
-    console.log(file)
+    logger.info('archivo recibido', file)
     const pet = PetDTO.getPetInputFrom({
         name,
         specie,
         birthDate,
         image: `${__dirname}/../public/img/${file.filename}`,
     })
-    console.log(pet)
+    logger.info('pet a crear', pet)
     const result = await petsService.create(pet)
     res.send({ status: "success", payload: result })
 }
