@@ -1,7 +1,7 @@
 import Users from "../src/dao/Users.dao.js"
 import { expect } from "chai"
 import { connectDB, disconnectDB } from "./db.js"
-import { logger } from '../src/utils/winston.js'
+import { logger } from "../src/utils/winston.js"
 
 before(async function () {
     await connectDB()
@@ -12,7 +12,6 @@ after(async function () {
 })
 
 describe("Obtener usuarios", function () {
-  
     before(function () {
         this.usersDao = new Users()
     })
@@ -122,5 +121,54 @@ describe("Crear Usuario", function () {
         const found = await this.usersDao.getBy({ email: this.mockUser.email })
         expect(found).to.not.be.null
         expect(found.email).to.equal(this.mockUser.email)
+    })
+})
+describe("Modificar Usuario", function () {
+    before(function () {
+        this.usersDao = new Users()
+    })
+
+    beforeEach(async function () {
+        this.mockUser = {
+            first_name: "Original",
+            last_name: "User",
+            email: `original${Date.now()}@test.com`,
+            password: "hashedPassword123",
+            role: "user",
+        }
+        const created = await this.usersDao.save(this.mockUser)
+        this.userId = created._id
+    })
+
+    afterEach(async function () {
+        if (this.userId) {
+            await this.usersDao.delete(this.userId)
+            this.userId = null
+        }
+    })
+
+    it("debe modificar correctamente los datos del usuario", async function () {
+        const updateData = {
+            first_name: "Modified",
+            last_name: "Updated",
+        }
+
+        await this.usersDao.update(this.userId, updateData)
+        const updated = await this.usersDao.getBy({ _id: this.userId })
+
+        expect(updated.first_name).to.equal("Modified")
+        expect(updated.last_name).to.equal("Updated")
+        expect(updated.email).to.equal(this.mockUser.email) // No cambió
+    })
+
+    it("debe mantener la contraseña hasheada al actualizar", async function () {
+        const originalUser = await this.usersDao.getBy({ _id: this.userId })
+        const originalPassword = originalUser.password
+
+        const updateData = { first_name: "NewName" }
+        await this.usersDao.update(this.userId, updateData)
+
+        const updated = await this.usersDao.getBy({ _id: this.userId })
+        expect(updated.password).to.equal(originalPassword)
     })
 })

@@ -1,5 +1,6 @@
 import { usersService } from "../services/index.js"
 import { logger } from "../utils/winston.js"
+import { createHash } from "../utils/index.js"
 
 const getAllUsers = async (req, res) => {
     try {
@@ -40,6 +41,13 @@ const updateUser = async (req, res) => {
     try {
         const updateBody = req.body
         const userId = req.params.uid
+
+        if (updateBody.password) {
+            logger.info(`pass antes: ${updateBody.password}`)
+            updateBody.password = await createHash(updateBody.password)
+            logger.info(`pass despues: ${updateBody.password}`)
+        }
+
         const user = await usersService.getUserById(userId)
         if (!user) {
             logger.warning(`Usuario no encontrado para actualizar: ${userId}`)
