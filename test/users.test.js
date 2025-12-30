@@ -1,6 +1,7 @@
 import Users from "../src/dao/Users.dao.js"
 import { expect } from "chai"
 import { connectDB, disconnectDB } from "./db.js"
+import { logger } from '../src/utils/winston.js'
 
 before(async function () {
     await connectDB()
@@ -11,6 +12,7 @@ after(async function () {
 })
 
 describe("Obtener usuarios", function () {
+  
     before(function () {
         this.usersDao = new Users()
     })
@@ -86,7 +88,7 @@ describe("Crear Usuario", function () {
             last_name: "User",
             email: `test${Date.now()}@test.com`,
             password: "hashedPassword123",
-            role: "user"
+            role: "user",
         }
     })
 
@@ -100,7 +102,7 @@ describe("Crear Usuario", function () {
     it("el dao debe agregar correctamente un elemento a la base de datos", async function () {
         const response = await this.usersDao.save(this.mockUser)
         this.createdUserId = response._id
-        
+
         expect(response).to.have.property("_id")
         expect(response.email).to.equal(this.mockUser.email)
     })
@@ -108,7 +110,7 @@ describe("Crear Usuario", function () {
     it("al agregar nuevo usuario  debe crearse con un arreglo de mascotas vacío por defecto", async function () {
         const response = await this.usersDao.save(this.mockUser)
         this.createdUserId = response._id
-        
+
         expect(response.pets).to.be.an("array")
         expect(response.pets).to.have.lengthOf(0)
     })
@@ -116,7 +118,7 @@ describe("Crear Usuario", function () {
     it("el dao puede obtener a un usuario por email", async function () {
         const created = await this.usersDao.save(this.mockUser)
         this.createdUserId = created._id
-        
+
         const found = await this.usersDao.getBy({ email: this.mockUser.email })
         expect(found).to.not.be.null
         expect(found.email).to.equal(this.mockUser.email)

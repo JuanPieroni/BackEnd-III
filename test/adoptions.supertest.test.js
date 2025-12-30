@@ -1,5 +1,6 @@
 import { expect } from "chai"
 import supertest from "supertest"
+import { logger } from "../src/utils/winston.js"
 
 const request = supertest("http://localhost:8080")
 
@@ -7,6 +8,7 @@ describe("adoptions endopoints", () => {
     let testUserId
     let testPetId
     let testAdoptionId
+    let testUserId2
 
     before(async () => {
         const mockUser = {
@@ -81,7 +83,7 @@ describe("adoptions endopoints", () => {
             const userResponse2 = await request
                 .post("/api/sessions/register")
                 .send(mockUser2)
-            const testUserId2 = userResponse2.body.payload
+            testUserId2 = userResponse2.body.payload
 
             const response = await request.post(
                 `/api/adoptions/${testUserId2}/${testPetId}`
@@ -130,5 +132,26 @@ describe("adoptions endopoints", () => {
                 "Adoption not found"
             )
         })
+    })
+
+    after(async () => {
+        try {
+            if (testUserId) {
+                await request.delete(`/api/users/${testUserId}`)
+                logger.info(` test : usuario ${testUserId} eliminado`)
+            }
+            if (testUserId2) {
+                await request.delete(`/api/users/${testUserId2}`)
+                logger.info(` test : usuario ${testUserId2} eliminado`)
+            }
+
+            if (testPetId) {
+                await request.delete(`/api/pets/${testPetId}`)
+                logger.info(` test : mascota ${testPetId} eliminada`)
+            }
+            logger.info("Test completado")
+        } catch (error) {
+            logger.fatal("Error en cleanup:", error.message)
+        }
     })
 })
